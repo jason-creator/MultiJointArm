@@ -3,7 +3,6 @@ import os
 import re
 import sys
 import binascii
-import struct
 import time
 from datetime import datetime
 from PyQt5 import QtGui
@@ -22,7 +21,8 @@ from collections import deque
 # 图像
 from PyQt5.QtGui import QPixmap
 
-BINARY_DATA_FLAG = b'\x01'
+
+
 
 # 训练模式窗口
 class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
@@ -157,6 +157,7 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
 
 
 
+
     def starttrainingbutton_click(self, StartTrainingFlag):
         # 开始计算训练时间
         self.timer.start(100)  # 每 100 毫秒（0.1 秒）发出一次 timeout 信号
@@ -218,7 +219,7 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
             self.CountGroup = self.CountGroup + 1
             self.CountTimes = self.CountTimes - self.CountTimesTotal
         if self.CountGroup > self.CountuGroupTotal:
-            QMessageBox.critical(self, '提示', '训练结束') # 设置结束弹窗
+            print("End!")  # 设置结束弹窗
         # 训练数据显示更新
         self.TrainingDataShow()
         # 更新图形
@@ -347,7 +348,7 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
             try:
                 # 尝试将数据编码为 GBK 格式并发送
                 self.com.write(txData.encode('GBK'))
-                print("txData:",txData)
+                # print("txData:",txData)
             except Exception as e:
                 # 如果发送过程中出现问题，显示错误消息
                 QMessageBox.critical(self, '错误', f'发送数据失败: {e}')
@@ -376,72 +377,66 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
         # print("what i send is:", txData)
 
     # 用于训练窗口数据的实时显示
-    def handle_data_packet(self, V, P, T):
+    def handle_data_packet(self, packet):
         try:
-            velocity = V
-            position = P
-            torque = T
-            if self.StartTrainingFlag == 1:
-                # 计算训练时长
-                training_duration = time.time() - self.training_start_time
-                formatted_duration = f"{training_duration:.2f}"
-                # 使用记录开始的时间作为文件名，并将文件存储到log文件夹中
-                with open(self.filename, "a") as file:
-                    file.write(f"{formatted_duration}, {velocity}, {position}, {torque} \n")
-            # 发送关节数据给训练窗口
-            self.joint_data_received.emit(velocity, position, torque)
-        except ValueError:
-            QMessageBox.critical(self, '错误', '解析关节数据失败')
+            packet = packet.strip()
+            if packet.startswith(b"VEL:") and b"POS:" in packet and b"TOR:" in packet:
+                # 解析关节数据包
+                data_parts = packet.split(b",")
+                # print("data_parts:", data_parts)
+                # print("len(data_parts):", len(data_parts))
+                try:
+                    # print("data_parts[0]:", data_parts[0])
+                    # print("data_parts[1]:", data_parts[1])
+                    # print("data_parts[2]:", data_parts[2])
+                    velocity = int(data_parts[0].split(b":")[1])
+                    position = int(data_parts[1].split(b":")[1])
+                    torque = int(data_parts[2].split(b":")[1])
+                    if self.StartTrainingFlag == 1:
+                        # 计算训练时长
+                        training_duration = time.time() - self.training_start_time
+                        formatted_duration = f"{training_duration:.2f}"
+                        # 使用记录开始的时间作为文件名，并将文件存储到log文件夹中
+                        with open(self.filename, "a") as file:
+                            file.write(f"{formatted_duration}, {velocity}, {position}, {torque} \n")
+                    # 发送关节数据给训练窗口
+                    self.joint_data_received.emit(velocity, position, torque)
+                except ValueError:
+                    QMessageBox.critical(self, '错误', '解析关节数据失败')
+        except Exception as e:
+            QMessageBox.critical(self, '错误', f'处理数据包时发生异常: {str(e)}')
 
+    # 用于接收窗口的数据显示
     def Com_Receive_Data(self):
         try:
             rxData = bytes(self.com.readAll())
-            # print("Received raw data:", rxData)
+            self.rx_buffer += rxData
+            # 检查是否收到完整的数据包，然后处理它
+            if b'\n' in self.rx_buffer:
+                packets = self.rx_buffer.split(b'\n')
+                self.rx_buffer = packets.pop()  # 将最后一个（可能不完整的）数据包保留在缓冲区中
+                for packet in packets:
+                    self.handle_data_packet(packet)
 
-            # 检查数据是否可能为有效的二进制数据
-            if rxData.startswith(b'\x00\x00\x00\x00') or len(rxData) >= 12:
-                try:
-                    V, P, T = struct.unpack('<iii', rxData[:12])
-                    self.handle_data_packet(V,P,T)
-                    self.Showcontent.insertPlainText(f"VEL:{V},POS:{P},TOR:{T}\n")
-                except struct.error:
-                    print("Data unpacking error, possible invalid binary data")
-                self.rx_buffer = rxData[12:]
-            else:
-                # 处理或显示文本数据
-                text_data = rxData.decode('utf-8')
-                self.Showcontent.insertPlainText(text_data + '\n')
         except Exception as e:
             QMessageBox.critical(self, '严重错误', f'串口接收数据错误: {str(e)}')
 
+        if self.Hex.isChecked():
+            Data = binascii.b2a_hex(rxData).decode('ascii')
+            hexStr = ' 0x'.join(re.findall('(.{2})', Data))
+            hexStr = '0x' + hexStr
+            self.Showcontent.insertPlainText(hexStr)
+            self.Showcontent.insertPlainText(' ')
+        else:
+            try:
+                # 使用UTF-8编码解码接收到的数据
+                decoded_data = rxData.decode('GBK')
+                self.Showcontent.insertPlainText(decoded_data)
+            except UnicodeDecodeError:
+                QMessageBox.critical(self, '错误', '解码接收数据失败')
+
         # 将滚动条移动到底部
         self.Showcontent.moveCursor(QtGui.QTextCursor.End)
-
-    # 用于接收窗口的数据显示
-    # def Com_Receive_Data(self):
-    #     try:
-    #         rxData = bytes(self.com.readAll())
-    #         # print("Received raw data:", rxData)
-    #
-    #         if rxData.startswith(BINARY_DATA_FLAG) and len(rxData) >= 13:  # 需要包含标识符的13字节
-    #             try:
-    #                 # 跳过第一个字节的标识符
-    #                 V, P, T = struct.unpack('<iii', rxData[1:13])
-    #                 self.handle_data_packet(V, P, T)
-    #                 self.Showcontent.insertPlainText(f"VEL:{V}, POS:{P}, TOR:{T}\n")
-    #                 self.rx_buffer = rxData[13:]  # 调整缓冲区的剩余部分
-    #             except struct.error:
-    #                 print("Data unpacking error, possible invalid binary data")
-    #         else:
-    #             # 处理文本数据，跳过第一个字节的标识符
-    #             text_data = rxData[0:].decode('utf-8')
-    #             self.Showcontent.insertPlainText(text_data + '\n')
-    #
-    #     except Exception as e:
-    #         QMessageBox.critical(self, '严重错误', f'串口接收数据错误: {str(e)}')
-    #
-    #     # 将滚动条移动到底部
-    #     self.Showcontent.moveCursor(QtGui.QTextCursor.End)
 
     def HexClicked(self):
         if self.Hex.isChecked() == True:
