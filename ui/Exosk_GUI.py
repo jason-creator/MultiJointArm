@@ -6,10 +6,10 @@ import binascii
 import time
 from datetime import datetime
 from PyQt5 import QtGui
-from PyQt5.QtCore import QTimer, QDate, QThread, QTime, pyqtSignal
+from PyQt5.QtCore import QTimer, QDate, QThread, QTime, pyqtSignal, Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QSlider
 # from PyQt5.QtWebEngineWidgets import *
 from motor_window_widget_designed import Ui_MotorWindowWidget
 from training_window_designed import Ui_TrainingWindow
@@ -64,14 +64,20 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         self.MotionRange = 120
         # 初始化重复次数和组数
         self.CountTimes = 0
-        self.CountTimesTotal = 3
+        self.CountTimesTotal = 2
         self.CountGroup = 0
-        self.CountuGroupTotal = 3
+        self.CountuGroupTotal = 1
         self.Countflag = 0
 
         # 初始化进度条
         self.progressBar.setMinimum(0)
         self.progressBar.setMaximum(100)
+
+        # 初始化训练结束信息窗
+        self.message_box = QMessageBox()
+        self.message_shown = False
+
+
 
 
     def CreateSignalSlot(self):
@@ -91,10 +97,13 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
     def DataPlot(self):
         # 力矩窗口数据初始化
         self.data_torque = deque(maxlen=200)
+        # self.full_data_torque = []
         self.data_torque.append((0, 0))
         # 速度窗口数据初始化
         self.data_velocity = deque(maxlen=200)
+        # self.full_data_velocity = []
         self.data_velocity.append((0, 0))
+
         # 图1 力矩-时间曲线图
         self.torque_plot_widget_legend = self.torque_plot_widget.addLegend()
         self.torque_plot_widget.setBackground('w')
@@ -126,9 +135,12 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         self.velocitytime_verticalLayout_plot.addWidget(self.velocity_plot_widget)
 
 
+
     def startbutton_clicked(self):
         # 接收关节数据
         self.MotorWindow.joint_data_received.connect(self.JointInfo_LCD)
+        # 接收本次训练文件名
+        self.MotorWindow.filename_changed.connect(self.GetFilename)
         # 显示上位机窗口
         self.MotorWindow.show()
 
@@ -137,6 +149,10 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         print("limitedSpeedValue:", limitedSpeedValue)
         self.MotorWindow.Com_Send_Data(f'lsv:{limitedSpeedValue}')
         self.sendResult.setText("发送完成")
+
+    def GetFilename(self, filename):
+        self.filename = filename
+        # print(f"Received name is: {self.filename}\n")
 
     def JointInfo_LCD(self, velocity, position, torque):
         # print("In the LCD func:", velocity, position, torque)
@@ -148,14 +164,12 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         self.Velocity_Current = velocity/1456
         self.Angle_Current = -position/1456
         self.Angle_Current_Show = -position/1456 + self.Angle_Initial
-        self.Torque_Current = -torque*0.01
+        self.Torque_Current = torque*0.01
         # 数值量显示，保留一位小数
         self.torque.display(round(self.Torque_Current, 1))
         self.angle.display(round(self.Angle_Current_Show, 1))
+        # self.angle.display(round(self.Angle_Current, 1))
         self.speed.display(round(self.Velocity_Current, 1))
-
-
-
 
 
     def starttrainingbutton_click(self, StartTrainingFlag):
@@ -196,13 +210,6 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         self.ERpeaktorque_data = np.min(torque_values[torque_values <= 0])
         self.IRtotalworkdone_data = self.MotionRange/180 * np.pi * np.sum(torque_values[torque_values >= 0])
         self.ERtotalworkdone_data = self.MotionRange/180 * np.pi * np.sum(torque_values[torque_values <= 0])
-        # 计算重复次数数据,sign()返回fuhao, diff()返回相邻元素差， ==0 则证明符号相同
-            # self.CountTimes = np.sum(np.diff(np.sign(velocity_values)) != 0)  # 统计一共有多少次变化
-            # print("The counttimes is:", self.CountTimes)
-            # self.CountTimes = self.CountTimes - self.CountTimesTotal * self.CountGroup  # 去除已经计算过的次数
-            # print("The calcul counttimes is:", self.CountTimes)
-            # if self.CountTimes > self.CountTimesTotal:
-            #     self.CountGroup = self.CountGroup + 1
         # 计算训练进度
         self.ProcessValue = abs(self.Angle_Current - self.downlimitation) / self.MotionRange * 100
         # print(f"The self.Angle_Current is:{self.Angle_Current}\n")
@@ -210,25 +217,88 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         self.ProcessValue = int(self.ProcessValue)
         # print("The process is:", self.ProcessValue)
         # 根据进度条来计算重复次数
-        if self.ProcessValue >= 95 and self.Countflag == 0:
-            self.CountTimes = self.CountTimes + 1
+        if self.ProcessValue >= 90 and self.Countflag == 0:
             self.Countflag = 1
-        if self.ProcessValue <= 5 and self.Countflag == 1:
+        if self.ProcessValue <= 10 and self.Countflag == 1:
+            self.CountTimes = self.CountTimes + 1
             self.Countflag = 0
-        if self.CountTimes > self.CountTimesTotal:
+        if self.CountTimes >= self.CountTimesTotal:
             self.CountGroup = self.CountGroup + 1
             self.CountTimes = self.CountTimes - self.CountTimesTotal
-        if self.CountGroup > self.CountuGroupTotal:
-            print("End!")  # 设置结束弹窗
-        # 训练数据显示更新
-        self.TrainingDataShow()
-        # 更新图形
-        self.torque_curve_1.setData(times, torque_values)
-        self.velocity_curve_1.setData(times, velocity_values)
-        # 更新x轴记录点
-        self.ptr += 0.1
-        # 重新设定 x 相关的坐标原点
-        # self.torque_curve_1.setPos(self.ptr, 0)
+        if self.CountGroup >= self.CountuGroupTotal:
+            if not self.message_shown:
+                self.message_box.setText("训练结束")
+                self.message_box.setWindowTitle("通知")
+                self.message_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)  # 设置标准按钮
+
+                result = self.message_box.exec_()  # 显示弹窗并等待用户响应
+
+                if result == QMessageBox.Ok:
+                    txData = 'c';  # 控制关节电机1失能
+                    self.MotorWindow.Com_Send_Data(txData)
+                    # 停止数据更新
+                    self.stopDataUpdates()
+                    # 关闭串口
+                    QTimer.singleShot(3000, self.MotorWindow.StopButton_clicked)
+                    self.message_shown = True
+
+        if not self.message_shown:
+            # 训练数据显示更新
+            self.TrainingDataShow()
+            # 更新曲线
+            self.torque_curve_1.setData(times, torque_values)
+            self.velocity_curve_1.setData(times, velocity_values)
+            # 更新x轴记录点
+            self.ptr += 0.1
+            # 重新设定 x 相关的坐标原点
+            # self.torque_curve_1.setPos(self.ptr, 0)
+        else:
+            # 显示所有训练数据
+            self.ShowAllDataInFig(self.filename)
+
+
+
+    def stopDataUpdates(self):
+        # 停止数据更新的方法
+        if self.timer.isActive():
+            self.timer.stop()  # 停止定时器
+
+    def ShowAllDataInFig(self, filename):
+        # filename = f"log/joint_data_20240424_171656.txt"
+        try:
+            with open(filename, 'r') as file:
+                lines = file.readlines()
+
+            # 初始化列表来收集每列的数据
+            time = []
+            velocity = []
+            torque = []
+
+            # 遍历每行，收集每列的数据
+            for line in lines:
+                parts = line.strip().split(',')  # 假设数据由逗号分隔
+                if len(parts) >= 4:  # 确保行中有足够的数据
+                    time.append(float(parts[0]))  # 第一列数据
+                    velocity.append(float(parts[1])) # 第二列数据
+                    torque.append(float(parts[3]))  # 第四列数据
+
+            torque = [(t*0.01) for t in torque]
+            velocity = [(v/1456) for v in velocity]
+
+            # 更新曲线
+            self.torque_curve_1.setData(time, torque)
+            self.velocity_curve_1.setData(time, velocity)
+
+            # 强制图表更新
+            self.torque_plot_widget.update()
+            self.velocity_plot_widget.update()
+
+        except IOError:
+            print("Error: File does not exist or cannot be accessed.")
+        except IndexError:
+            print("Error: Some lines in the file may not have enough columns.")
+        except ValueError:
+            print("Error: Data conversion error, please check the data format in the file.")
 
     def TrainingDataShow(self):
         # 训练峰值力矩，总量更新
@@ -278,6 +348,9 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
 class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
     joint_data_received = pyqtSignal(int, int, int)
     start_training_flag = pyqtSignal(bool)
+    filename_changed = pyqtSignal(str)
+
+
     def __init__(self, parent=None):
         super(MyMotorWindow, self).__init__(parent)
         self.setupUi(self)
@@ -389,13 +462,13 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
                     # print("data_parts[0]:", data_parts[0])
                     # print("data_parts[1]:", data_parts[1])
                     # print("data_parts[2]:", data_parts[2])
-                    velocity = int(data_parts[0].split(b":")[1])
-                    position = int(data_parts[1].split(b":")[1])
+                    velocity = -int(data_parts[0].split(b":")[1])
+                    position = -int(data_parts[1].split(b":")[1])
                     torque = int(data_parts[2].split(b":")[1])
                     if self.StartTrainingFlag == 1:
                         # 计算训练时长
                         training_duration = time.time() - self.training_start_time
-                        formatted_duration = f"{training_duration:.2f}"
+                        formatted_duration = f"{training_duration:.3f}"
                         # 使用记录开始的时间作为文件名，并将文件存储到log文件夹中
                         with open(self.filename, "a") as file:
                             file.write(f"{formatted_duration}, {velocity}, {position}, {torque} \n")
@@ -558,7 +631,8 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
         self.filename = f"log/joint_data_{start_time}.txt"
-
+        self.filename_changed.emit(self.filename)
+        # print(f"filename is: {self.filename}")
 
 
 
