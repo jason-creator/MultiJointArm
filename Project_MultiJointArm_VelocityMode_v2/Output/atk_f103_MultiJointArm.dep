@@ -1,7 +1,7 @@
 Dependencies for Project 'atk_f103', Target 'MultiJointArm': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
 F (..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Source\Templates\arm\startup_stm32f103xe.s)(0x5F576710)(--cpu Cortex-M3 -g --apcs=interwork -ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include--pd "__UVISION_VERSION SETA 535" --pd "STM32F10X_HD SETA 1"--list ..\..\output\startup_stm32f103xe.lst --xref -o ..\..\output\startup_stm32f103xe.o --depend ..\..\output\startup_stm32f103xe.d)
-F (..\..\User\main.c)(0x66227988)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ..\..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\..\Drivers\CMSIS\Include -I ..\..\Drivers\ -I ..\..\User -I ..\..\Middlewares-ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="535" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o ..\..\output\main.o --omf_browse ..\..\output\main.crf --depend ..\..\output\main.d)
+F (..\..\User\main.c)(0x66262A2A)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ..\..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\..\Drivers\CMSIS\Include -I ..\..\Drivers\ -I ..\..\User -I ..\..\Middlewares-ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="535" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o ..\..\output\main.o --omf_browse ..\..\output\main.crf --depend ..\..\output\main.d)
 I (..\..\Drivers\./SYSTEM/sys/sys.h)(0x61839F5E)
 I (..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h)(0x5F5B8438)
 I (..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xe.h)(0x5F5B8438)
@@ -1683,7 +1683,7 @@ I (..\..\Drivers\./BSP/LED/led.h)(0x5FFEEE3A)
 I (..\..\Drivers\./SYSTEM/delay/delay.h)(0x61839F5E)
 I (..\..\Drivers\./SYSTEM/usart/usart.h)(0x61839F5E)
 I (D:\Software\keil5\ARM\ARMCC\include\stdio.h)(0x60252374)
-F (..\..\Drivers\BSP\MOTOR\motor.c)(0x662273C3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ..\..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\..\Drivers\CMSIS\Include -I ..\..\Drivers\ -I ..\..\User -I ..\..\Middlewares-ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="535" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o ..\..\output\motor.o --omf_browse ..\..\output\motor.crf --depend ..\..\output\motor.d)
+F (..\..\Drivers\BSP\MOTOR\motor.c)(0x662625A4)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ..\..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\..\Drivers\CMSIS\Include -I ..\..\Drivers\ -I ..\..\User -I ..\..\Middlewares-ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="535" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o ..\..\output\motor.o --omf_browse ..\..\output\motor.crf --depend ..\..\output\motor.d)
 I (..\..\Drivers\./BSP/MOTOR/motor.h)(0x65E9CAB8)
 I (..\..\Drivers\./SYSTEM/sys/sys.h)(0x61839F5E)
 I (..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h)(0x5F5B8438)
@@ -1754,7 +1754,7 @@ I (..\..\Drivers\./BSP/CRC/crc.h)(0x63F70E16)
 I (D:\Software\keil5\ARM\ARMCC\include\stdlib.h)(0x60252374)
 I (D:\Software\keil5\ARM\ARMCC\include\string.h)(0x6025237E)
 I (D:\Software\keil5\ARM\ARMCC\include\math.h)(0x60252378)
-F (..\..\Drivers\BSP\CONTROL\control.c)(0x662277A1)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ..\..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\..\Drivers\CMSIS\Include -I ..\..\Drivers\ -I ..\..\User -I ..\..\Middlewares-ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="535" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o ..\..\output\control.o --omf_browse ..\..\output\control.crf --depend ..\..\output\control.d)
+F (..\..\Drivers\BSP\CONTROL\control.c)(0x662643DF)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ..\..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\..\Drivers\CMSIS\Include -I ..\..\Drivers\ -I ..\..\User -I ..\..\Middlewares-ID:\Software\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="535" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o ..\..\output\control.o --omf_browse ..\..\output\control.crf --depend ..\..\output\control.d)
 I (..\..\Drivers\./BSP/CONTROL/control.h)(0x65EFC68A)
 I (..\..\Drivers\./SYSTEM/sys/sys.h)(0x61839F5E)
 I (..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h)(0x5F5B8438)

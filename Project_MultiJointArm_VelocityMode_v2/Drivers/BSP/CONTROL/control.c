@@ -51,7 +51,7 @@ uint8_t assist_control(uint8_t motor_id, uint8_t motor_num, JOINT_INFO *joint)
 int torque2velocity(uint8_t motor_num, JOINT_INFO *joint)
 {
 	// 电机运动正方向与力矩传感器正方向相反
-	float SupportingArm = 133.0;
+	float SupportingArm = 133.0;   // horizontal supporting arm torque 1.33 Nm, the encoder is 77600
 	float radians = -(joint->Position[motor_num][Current] - joint->Position[motor_num][DownLimitation]) /(3.1415 * 524288);
 	
 	joint->Torque[motor_num][Current] = (int)(joint->Torque[motor_num][Current] + SupportingArm * cos(radians));
@@ -154,7 +154,7 @@ void update_motor_speed(uint8_t motor_id, uint8_t motor_num, float pid_out, JOIN
 			velocity = min(velocity, joint->limited_speed[motor_num]);
 		if(velocity < 0)
 			velocity = -min(abs(velocity), joint->limited_speed[motor_num]);
-		
+		 
 		SetVelocity(motor_id, velocity);
 }
 
@@ -163,7 +163,7 @@ uint8_t active_control_position_limitation(uint8_t motor_id, uint8_t motor_num, 
     float position_difference_down = min(joint->Position[motor_num][Current] - joint->Position[motor_num][DownLimitation],0);
     float position_difference_up = max(joint->Position[motor_num][Current] - joint->Position[motor_num][UpLimitation],0);
     float pid_out;
-		float position_difference = ((float)joint->limited_speed[motor_num] * (float)joint->limited_speed[motor_num])/(2 * 436907.0);
+		float position_difference = 5 * 1456.35;  // 1 du = 1456.35 num
     if (position_difference_down >= -position_difference && joint->Torque[motor_num][Current] < 0)
     {
 				pid_out = joint->Velocity[motor_num][Current] + pid_control(joint->Velocity[motor_num][Current], joint);

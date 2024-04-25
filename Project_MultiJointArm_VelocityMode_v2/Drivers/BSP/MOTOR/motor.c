@@ -150,7 +150,7 @@
 		uint8_t res;
 	  uint8_t CommandData[8];
 	 
-//		delay_ms(10);
+		delay_ms(10);
 	 
 		// Stop remote node
 		CommandData[0]=0x02; 
@@ -162,7 +162,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x00, CommandData, 2);		// res = 0, success
-//		printf("The stop remote node result: %d\n", res);
+		printf("The stop remote node result: %d\n", res);
 	 
 		// Reset communication
 		CommandData[0]=0x82; 
@@ -174,7 +174,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x00, CommandData, 2);		
-//		printf("The Reset communication result: %d\n", res);
+		printf("The Reset communication result: %d\n", res);
 
 		// Set operating Mode
 		CommandData[0]=0x2F; 
@@ -186,7 +186,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Set operating Mode result: %d\n", res);
+		printf("The Set operating Mode result: %d\n", res);
 		
 
 		// Check operating mode
@@ -199,7 +199,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Check operating mode result: %d\n", res);
+		printf("The Check operating mode result: %d\n", res);
 		
 		if (mode!=OperatingMode_ProfileTorque || mode!=OperatingMode_CyclicTorque)
 		{
@@ -215,7 +215,7 @@
 					CommandData[6]=(speed >> 16) & 0XFF; 
 					CommandData[7]=(speed >> 24) & 0XFF;
 					res = can_send_msg(0x600+motor_id, CommandData, 8);
-//					printf("The Set initial speed result: %d\n", res);
+					printf("The Set initial speed result: %d\n", res);
 				}
 				
 				// Set initial acceleration 
@@ -228,7 +228,7 @@
 				CommandData[6]=0x00; 
 				CommandData[7]=0x00;	
 				res = can_send_msg(0x600+motor_id, CommandData, 8);
-//				printf("The Set initial acceleration result: %d\n", res);
+				printf("The Set initial acceleration result: %d\n", res);
 				
 				// Set initial deceleration 
 				CommandData[0]=0x23; 
@@ -240,7 +240,7 @@
 				CommandData[6]=0x00; 
 				CommandData[7]=0x00;	
 				res = can_send_msg(0x600+motor_id, CommandData, 8);
-//				printf("The Set initial deceleration result: %d\n", res);
+				printf("The Set initial deceleration result: %d\n", res);
 		
 		}
 
@@ -255,7 +255,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Disable cob-id sync result: %d\n", res);
+		printf("The Disable cob-id sync result: %d\n", res);
 		
 		// Set communication cycle period
 		CommandData[0]=0x23; 
@@ -267,7 +267,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Set communication cycle period result: %d\n", res);
+		printf("The Set communication cycle period result: %d\n", res);
 		
 		// Disable TPDO
 		CommandData[0]=0x23; 
@@ -279,7 +279,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x80;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Disable TPDO result: %d\n", res);
+		printf("The Disable TPDO result: %d\n", res);
 		
 		// Defines the transmission type
 		CommandData[0]=0x2F; 
@@ -291,7 +291,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Defines the transmission type result: %d\n", res);
+		printf("The Defines the transmission type result: %d\n", res);
 		
 		
 		// Defines the number of valid entries in the mapping record
@@ -304,7 +304,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Defines the number of valid result: %d\n", res);
+		printf("The Defines the number of valid result: %d\n", res);
 		
 		
 		// 1A00h-01h maps 60410010h(status word)
@@ -317,7 +317,7 @@
 		CommandData[6]=0x41; 
 		CommandData[7]=0x60;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The 1A00h-01h map result: %d\n", res);
+		printf("The 1A00h-01h map result: %d\n", res);
 
 		// 1A00h-02h maps 606C0020h(actual position, speed, torque)
 		switch (mode)
@@ -332,7 +332,7 @@
 				CommandData[6]=0x64; 
 				CommandData[7]=0x60;
 				res = can_send_msg(0x600+motor_id, CommandData, 8);
-//				printf("The 1A00h-02h maps result: %d\n", res);
+				printf("The 1A00h-02h maps result: %d\n", res);
 				break;		
 			case OperatingMode_ProfileVelocity: case OperatingMode_CyclicVelocity:
 				CommandData[0]=0x23; 
@@ -344,7 +344,7 @@
 				CommandData[6]=0x6C; 
 				CommandData[7]=0x60;
 				res = can_send_msg(0x600+motor_id, CommandData, 8);
-//				printf("The 1A00h-02h maps result: %d\n", res);
+				printf("The 1A00h-02h maps result: %d\n", res);
 				break;		
 			case OperatingMode_ProfileTorque:	case OperatingMode_CyclicTorque:
 				CommandData[0]=0x23; 
@@ -356,7 +356,7 @@
 				CommandData[6]=0x77; 
 				CommandData[7]=0x60;
 				res = can_send_msg(0x600+motor_id, CommandData, 8);
-//				printf("The 1A00h-02h maps result: %d\n", res);
+				printf("The 1A00h-02h maps result: %d\n", res);
 			
 				// actual current
 				CommandData[0]=0x23; 
@@ -368,7 +368,7 @@
 				CommandData[6]=0x78; 
 				CommandData[7]=0x60;
 				res = can_send_msg(0x600+motor_id, CommandData, 8);
-//				printf("The 1A00h-02h maps result: %d\n", res);
+				printf("The 1A00h-02h maps result: %d\n", res);
 				break;
 			
 			default:
@@ -391,7 +391,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The the number of valid entries result: %d\n", res);
+		printf("The the number of valid entries result: %d\n", res);
 		
 		// Enable TPDO
 		CommandData[0]=0x23; 
@@ -403,7 +403,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Enable TPDO result: %d\n", res);
+		printf("The Enable TPDO result: %d\n", res);
 
 		// Disable RPDO
 		CommandData[0]=0x23; 
@@ -415,7 +415,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x80;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Disable RPDO result: %d\n", res);
+		printf("The Disable RPDO result: %d\n", res);
 		
 		// Defines the transmission type
 		CommandData[0]=0x2F; 
@@ -427,7 +427,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Defines the transmission type result: %d\n", res);
+		printf("The Defines the transmission type result: %d\n", res);
 		
 		// Defines the number of valid entries in the mapping record
 		CommandData[0]=0x2F; 
@@ -439,7 +439,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Defines the number of valid entries result: %d\n", res);
+		printf("The Defines the number of valid entries result: %d\n", res);
 		
 		// 1600h-01h maps 60400010h(control word)
 		CommandData[0]=0x23; 
@@ -451,7 +451,7 @@
 		CommandData[6]=0x40; 
 		CommandData[7]=0x60;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The control word result: %d\n", res);
+		printf("The control word result: %d\n", res);
 		
 		// 1600h-02h maps 60FF0020h(target position, speed, torque)
 		switch (mode)
@@ -491,7 +491,7 @@
 				break;
 		}	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The 1600h-02h maps result: %d\n", res);
+		printf("The 1600h-02h maps result: %d\n", res);
 		
 		// 1600h-00h:the number of valid entries in the mapping record:2
 		CommandData[0]=0x2F; 
@@ -503,7 +503,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The mapping record result: %d\n", res);
+		printf("The mapping record result: %d\n", res);
 		
 		// Ensable RPDO
 		CommandData[0]=0x23; 
@@ -515,7 +515,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x600+motor_id, CommandData, 8);
-//		printf("The Ensable RPDO result: %d\n", res);
+		printf("The Ensable RPDO result: %d\n", res);
 		
 		// Start remote node
 		CommandData[0]=0x01; 
@@ -527,7 +527,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x00, CommandData, 2);
-//		printf("The Start remote node result: %d\n", res);
+		printf("The Start remote node result: %d\n", res);
 		
 		// Heartbeat command
 		CommandData[0]=0x00; 
@@ -539,8 +539,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x700+motor_id, CommandData, 8);
-//		res = can_receive_msg(0x700+motor_id, CommandData);  // heartbeat detection
-//		printf("The Heartbeat is: %d\n", CommandData[0]);
+		printf("The Heartbeat is: %d\n", CommandData[0]);
 		
 		// Sync command
 		CommandData[0]=0x00; 
@@ -552,8 +551,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x80, CommandData, 8);
-//		res = can_receive_msg(0x180+motor_id, CommandData);  // sync
-//		printf("The Sync command result: %d\n", res);
+		printf("The Sync command result: %d\n", res);
 		
 		
 		CommandData[0]=0x80; 
@@ -565,7 +563,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x200+motor_id, CommandData, 8);
-//		printf("The result: %d\n", res);
+		printf("The result: %d\n", res);
 		
 		CommandData[0]=0x06; 
 		CommandData[1]=0x00; 
@@ -576,7 +574,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x200+motor_id, CommandData, 8);
-//		printf("The Disable TPDO result: %d\n", res);
+		printf("The Disable TPDO result: %d\n", res);
 		
 		CommandData[0]=0x07; 
 		CommandData[1]=0x00; 
@@ -587,7 +585,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x200+motor_id, CommandData, 8);
-//		printf("The result: %d\n", res);
+		printf("The result: %d\n", res);
 		
 		// Enable
 		CommandData[0]=0x0F; 
@@ -599,7 +597,7 @@
 		CommandData[6]=0x00; 
 		CommandData[7]=0x00;	
 		res = can_send_msg(0x200+motor_id, CommandData, 8);
-//		printf("The Enable result: %d\n", res);
+		printf("The Enable result: %d\n", res);
 		
 		return res;
  }

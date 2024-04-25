@@ -124,7 +124,8 @@ int main(void)
 						case 98:
 								flag_active_control[ElbowBendMotor] = 1;
 								joint.Position[ElbowBendMotor][Last] = joint.Position[ElbowBendMotor][Current];
-								joint.Position[ElbowBendMotor][DownLimitation] = joint.Position[ElbowBendMotor][Last];
+//								joint.Position[ElbowBendMotor][DownLimitation] = joint.Position[ElbowBendMotor][Last];
+								joint.Position[ElbowBendMotor][DownLimitation] = 77600;
 								joint.Position[ElbowBendMotor][UpLimitation] = joint.Position[ElbowBendMotor][DownLimitation] - joint.range[ElbowBendMotor];
 //								joint.Position[ElbowBendMotor][DownLimitation] = 696510;
 //								joint.Position[ElbowBendMotor][UpLimitation] = 435000;
