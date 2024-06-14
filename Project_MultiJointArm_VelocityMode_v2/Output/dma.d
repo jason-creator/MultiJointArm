@@ -1,10 +1,10 @@
-..\..\output\dma.o: ..\..\Drivers\BSP\DMA\dma.c
+..\..\output\dma.o: ..\..\..\Project_MultiJointArm\Drivers\BSP\DMA\dma.c
 ..\..\output\dma.o: ..\..\Drivers\./BSP/DMA/dma.h
 ..\..\output\dma.o: ..\..\Drivers\./SYSTEM/sys/sys.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f103xe.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Include\core_cm3.h
-..\..\output\dma.o: D:\Keil5\ARM\ARMCC\bin\..\include\stdint.h
+..\..\output\dma.o: D:\Software\keil5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Include\cmsis_version.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Include\cmsis_compiler.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Include\cmsis_armcc.h
@@ -15,7 +15,7 @@
 ..\..\output\dma.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_def.h
 ..\..\output\dma.o: ..\..\Drivers\CMSIS\Device\ST\STM32F1xx\Include\stm32f1xx.h
 ..\..\output\dma.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-..\..\output\dma.o: D:\Keil5\ARM\ARMCC\bin\..\include\stddef.h
+..\..\output\dma.o: D:\Software\keil5\ARM\ARMCC\Bin\..\include\stddef.h
 ..\..\output\dma.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc_ex.h
 ..\..\output\dma.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio.h
 ..\..\output\dma.o: ..\..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_gpio_ex.h

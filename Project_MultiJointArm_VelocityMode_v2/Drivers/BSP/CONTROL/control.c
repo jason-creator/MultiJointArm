@@ -51,16 +51,16 @@ uint8_t assist_control(uint8_t motor_id, uint8_t motor_num, JOINT_INFO *joint)
 int torque2velocity(uint8_t motor_num, JOINT_INFO *joint)
 {
 	// 电机运动正方向与力矩传感器正方向相反
-	float SupportingArm = 133.0;   // horizontal supporting arm torque 1.33 Nm, the encoder is 77600
-	float radians = -(joint->Position[motor_num][Current] - joint->Position[motor_num][DownLimitation]) /(3.1415 * 524288);
+	float SupportingArm = -190.0;   // horizontal supporting arm torque 1.33 Nm, the encoder is 77600
+//	float radians = -(joint->Position[motor_num][Current] - joint->Position[motor_num][DownLimitation]) /(3.1415 * 524288);
 	
-	joint->Torque[motor_num][Current] = (int)(joint->Torque[motor_num][Current] + SupportingArm * cos(radians));
+	joint->Torque[motor_num][Current] = (int)(joint->Torque[motor_num][Current] + SupportingArm * cos(9.375e-6 * joint->Position[motor_num][Current] - 21.032 ));
 	
 	switch(motor_num)
 	{
 		case 0:
 			if(abs(joint->Torque[motor_num][Current]) > 10){
-				joint->Velocity[motor_num][Desire] = -joint->Torque[motor_num][Current] * 140;  // ignore the gravity
+				joint->Velocity[motor_num][Desire] = -joint->Torque[motor_num][Current] * 140;  
 			}
 			else{
 				joint->Velocity[motor_num][Desire] = 0;
@@ -184,7 +184,6 @@ uint8_t active_control_position_limitation(uint8_t motor_id, uint8_t motor_num, 
 
 
 
-
 ////////////////////////////////////////Maxon/////////////////////////////////////////////
 
 // 建立力矩与加速度、速度的映射关系
@@ -264,14 +263,27 @@ uint8_t active_control_position_limitation_Maxon(uint8_t motor_num, JOINT_INFO *
 
 //////////////////////////////////////////Maxon end///////////////////////////////////////////////////////
 
-void send_joint_data_to_pc(int32_t velocity, int32_t position, int32_t torque)
-{
-    // 打包数据，将整数转换为字符串，并用逗号分隔
-    char buffer[64];
-    sprintf(buffer, "VEL:%d,POS:%d,TOR:%d\n", velocity, position, torque);  // 该显示格式跟上位机同步，尽量不进行修改
-    // 通过UART发送数据
-    HAL_UART_Transmit(&g_uart1_handle, (uint8_t *)buffer, strlen(buffer), 50);
+//void send_joint_data_to_pc(int32_t velocity, int32_t position, int32_t torque)
+//{
+//    // 打包数据，将整数转换为字符串，并用逗号分隔
+//    char buffer[64];
+//    sprintf(buffer, "VEL:%d,POS:%d,TOR:%d\n", velocity, position, torque);  // 该显示格式跟上位机同步，尽量不进行修改
+//    // 通过UART发送数据
+//    HAL_UART_Transmit(&g_uart1_handle, (uint8_t *)buffer, strlen(buffer), 50);
+//}
+
+void send_joint_data_to_pc(int32_t velocity, int32_t position, int32_t torque) {
+    static char buffer[64]; 
+    int len = snprintf(buffer, sizeof(buffer), "VEL:%d,POS:%d,TOR:%d\n", velocity, position, torque);
+	
+    if (len > 0 && len < sizeof(buffer)) {
+        HAL_StatusTypeDef status = HAL_UART_Transmit_DMA(&g_uart1_handle, (uint8_t*)buffer, len);
+        if (status != HAL_OK) {
+            printf("DMA Transmission Failed, Error Code: %d\n", status);
+        }
+    }
 }
+
 
 uint8_t state_choice_func(void)
 {

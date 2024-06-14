@@ -110,7 +110,7 @@ void rs485_init(uint32_t baudrate)
 void rs485_send_data(uint8_t *buf, uint8_t len)
 {
     RS485_RE(1);                                         /* 进入发送模式 */
-    HAL_UART_Transmit(&g_rs458_handler, buf, len, 1000); /* 串口2发送数据 */
+    HAL_UART_Transmit(&g_rs458_handler, buf, len, 50); /* 串口2发送数据 */
 //		HAL_UART_Transmit_DMA(&g_rs458_handler, buf, len);
     g_RS485_rx_cnt = 0;
     RS485_RE(0); /* 进入接收模式 */
@@ -130,8 +130,8 @@ void rs485_receive_data(uint8_t *buf, uint8_t *len)
     uint8_t i = 0;
 //		rxlen = g_RS485_rx_cnt;
     *len = 0;     /* 默认为0 */
-//    delay_ms(10); /* 等待10ms,连续超过10ms没有接收到一个数据,则认为接收结束 */
-		delay_ms(50);
+    delay_ms(15); /* 等待10ms,连续超过10ms没有接收到一个数据,则认为接收结束 */
+//		delay_ms(50);
 //		printf("here, g_RS485_rx_cnt:%d, rxlen:%d\n",g_RS485_rx_cnt,rxlen);
 		for (i = 0; i < g_RS485_rx_cnt; i++)
 		{

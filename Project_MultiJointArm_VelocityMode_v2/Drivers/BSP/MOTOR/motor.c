@@ -969,7 +969,7 @@ int Get_CurrentPosition(uint8_t motor_id)
 	uint8_t res;
 	uint8_t CommandData[8];
 	int Current_position = 0;
-	int timeout = 5;  // for example, 100 ms
+	int timeout = 2;  // for example, 100 ms
 	
 	CommandData[0]=0x40; 
 	CommandData[1]=0x64; 
@@ -1000,10 +1000,10 @@ int Get_CurrentVelocity(uint8_t motor_id)
 	uint8_t res;
 	uint8_t CommandData[8];
 	int Current_velocity = 0;
-	int timeout = 5;  // for example, 100 ms
+	int timeout = 2;  // for example, 100 ms
 	
 	CommandData[0]=0x40; 
-	CommandData[1]=0x69; 
+	CommandData[1]=0x6C; 
 	CommandData[2]=0x60; 
 	CommandData[3]=0x00;
 	CommandData[4]=0x00;	       
@@ -1016,7 +1016,7 @@ int Get_CurrentVelocity(uint8_t motor_id)
 	do {
 		delay_ms(1);  // Wait 1 ms each loop iteration
 		res = can_receive_msg(0x0580+motor_id, CommandData);
-	} while ((res == 0 || CommandData[0] != 0x43 || CommandData[1] != 0x69 || CommandData[2] != 0x60) && --timeout > 0);
+	} while ((res == 0 || CommandData[0] != 0x43 || CommandData[1] != 0x6C || CommandData[2] != 0x60) && --timeout > 0);
 
 	if (timeout > 0 && res != 0)
 	{

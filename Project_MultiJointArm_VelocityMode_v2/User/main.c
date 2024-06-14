@@ -20,6 +20,7 @@
 #include "./BSP/CAN/can.h"
 #include "./BSP/CONTROL/control.h"
 
+extern DMA_HandleTypeDef  g_dma_handle;     /* DMA句柄 */
 
 int main(void)
 {
@@ -72,7 +73,8 @@ int main(void)
     delay_init(72);                             /* 延时初始化 */
     usart_init(115200);                         /* 串口初始化为115200 */
     led_init();                                 /* 初始化LED */
-    rs485_init(19200);                          /* 初始化RS485,set the baudrate 19200 */
+    rs485_init(115200);                          /* 初始化RS485,set the baudrate 115200 */
+		dma_init(DMA1_Channel4);               		 /* 初始化串口1 TX DMA */
 		
 		key_init();                                                            /* 初始化按键 */
 		can_init(CAN_SJW_1TQ, CAN_BS2_8TQ, CAN_BS1_9TQ, 2, CAN_MODE_NORMAL); 		/* CAN初始化, 正常模式, 波特率1Mbps, 为实现该波特率，直接将分频系数改为2即可 */
@@ -83,6 +85,7 @@ int main(void)
 
     while (1)
     {
+			
 			if (g_usart_rx_sta & 0x8000) 
 			{
 					len = g_usart_rx_sta & 0x3fff;  /* 得到此次接收到的数据长度 */
@@ -119,13 +122,14 @@ int main(void)
 						case 97: 									
 								Motor_Init(ID_ElbowBendMotor, OperatingMode_CyclicVelocity, joint.acceleration, joint.deceleration, joint.Velocity[ElbowBendMotor][Desire], joint.communication_cycle_period);
 //								printf("motor init finished!\n");
+								delay_ms(500);  // handbook advice
 								break;
 						// 电机1使能
 						case 98:
 								flag_active_control[ElbowBendMotor] = 1;
 								joint.Position[ElbowBendMotor][Last] = joint.Position[ElbowBendMotor][Current];
 //								joint.Position[ElbowBendMotor][DownLimitation] = joint.Position[ElbowBendMotor][Last];
-								joint.Position[ElbowBendMotor][DownLimitation] = 77600;
+								joint.Position[ElbowBendMotor][DownLimitation] = 600000;
 								joint.Position[ElbowBendMotor][UpLimitation] = joint.Position[ElbowBendMotor][DownLimitation] - joint.range[ElbowBendMotor];
 //								joint.Position[ElbowBendMotor][DownLimitation] = 696510;
 //								joint.Position[ElbowBendMotor][UpLimitation] = 435000;
@@ -133,6 +137,7 @@ int main(void)
 //								printf("joint.Position[ElbowBendMotor][DownLimitation]: %d\n", joint.Position[ElbowBendMotor][DownLimitation]);
 								SetVelocity(ID_ElbowBendMotor, joint.Velocity[ElbowBendMotor][Desire]);
 //								printf("Start the control mode\n");
+								delay_ms(300);  // handbook advice
 								break;
 						// 电机1失能
 						case 99:
@@ -210,8 +215,12 @@ int main(void)
 						g_usart_rx_sta = 0;
 			}	
 			
+//				joint.Position[ElbowBendMotor][Current] = 12;
+//				joint.Torque[ElbowBendMotor][Current] = 13;	
+//				joint.Velocity[ElbowBendMotor][Current] = 14;
+
 				joint.Position[ElbowBendMotor][Current] = Get_CurrentPosition(ID_ElbowBendMotor);
-				joint.Torque[ElbowBendMotor][Current] = Get_Torque(ID_ElbowBendSensor);	
+				joint.Torque[ElbowBendMotor][Current] = Get_Torque(ID_ElbowBendSensor);	  // RS485 take about 0.02s for one cycle
 				joint.Velocity[ElbowBendMotor][Current] = Get_CurrentVelocity(ID_ElbowBendMotor);
 			
 //				joint.Position[ElbowPronationMotor][Current] = Get_CurrentPosition(ID_ElbowPronationMotor);
@@ -229,6 +238,12 @@ int main(void)
 				if (flag_active_control[ElbowBendMotor]){
 					torque2velocity(ElbowBendMotor, &joint);
 					active_control_position_limitation(ID_ElbowBendMotor, ElbowBendMotor, &joint);
+					
+					// Free move
+//						float v = free_move(ID_ElbowBendMotor, ElbowBendMotor, &joint);
+//						update_motor_speed(ID_ElbowBendMotor, ElbowBendMotor, v, &joint);
+					// velocity control for gravity measure
+//					SetVelocity(ID_ElbowBendMotor, 3000);
 				}
 				
 //				if (flag_active_control[ElbowPronationMotor]){
@@ -246,7 +261,16 @@ int main(void)
 //				printf("MOTOR3 p: %d, v: %d, T: %d\n", joint.Position[WristBendMotor][Current], joint.Velocity[WristBendMotor][Current], joint.Torque[WristBendMotor][Current]);
 
 				send_joint_data_to_pc(joint.Velocity[ElbowBendMotor][Current], joint.Position[ElbowBendMotor][Current], joint.Torque[ElbowBendMotor][Current]);
-
+				
+				while(1)
+				{
+						if ( __HAL_DMA_GET_FLAG(&g_dma_handle, DMA_FLAG_TC4))   
+						{
+								__HAL_DMA_CLEAR_FLAG(&g_dma_handle, DMA_FLAG_TC4);  
+								HAL_UART_DMAStop(&g_uart1_handle);                 
+								break;
+						} 	
+				}
 				
 				t++;
 			

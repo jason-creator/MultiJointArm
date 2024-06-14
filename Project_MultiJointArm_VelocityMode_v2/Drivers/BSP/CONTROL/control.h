@@ -64,6 +64,8 @@ int torque2velocity_Maxon(uint8_t motor_num, JOINT_INFO *joint);
 
 uint8_t state_choice_func(void);  // ×´Ì¬»úÑ¡Ôñº¯Êý
 
+void update_motor_speed(uint8_t motor_id, uint8_t motor_num, float pid_out, JOINT_INFO *joint);
+
 
 #endif
 

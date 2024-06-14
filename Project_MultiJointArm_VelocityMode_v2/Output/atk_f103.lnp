@@ -30,6 +30,7 @@
 "..\..\output\can.o"
 "..\..\output\motor.o"
 "..\..\output\control.o"
+"..\..\output\dma.o"
 "..\..\output\usmart.o"
 "..\..\output\usmart_config.o"
 "..\..\output\usmart_port.o"
