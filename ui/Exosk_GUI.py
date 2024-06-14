@@ -9,7 +9,7 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QTimer, QDate, QThread, QTime, pyqtSignal, Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
-from PyQt5.QtWidgets import QApplication, QMainWindow, QSlider
+from PyQt5.QtWidgets import QApplication, QMainWindow
 # from PyQt5.QtWebEngineWidgets import *
 from motor_window_widget_designed import Ui_MotorWindowWidget
 from training_window_designed import Ui_TrainingWindow
@@ -64,7 +64,7 @@ class MyTrainingWindow(QMainWindow, Ui_TrainingWindow):
         self.MotionRange = 120
         # 初始化重复次数和组数
         self.CountTimes = 0
-        self.CountTimesTotal = 2
+        self.CountTimesTotal = 16
         self.CountGroup = 0
         self.CountuGroupTotal = 1
         self.Countflag = 0
@@ -467,8 +467,8 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
                     torque = int(data_parts[2].split(b":")[1])
                     if self.StartTrainingFlag == 1:
                         # 计算训练时长
-                        training_duration = time.time() - self.training_start_time
-                        formatted_duration = f"{training_duration:.3f}"
+                        training_duration = round(1000*time.time())
+                        formatted_duration = f"{training_duration:.2f}"
                         # 使用记录开始的时间作为文件名，并将文件存储到log文件夹中
                         with open(self.filename, "a") as file:
                             file.write(f"{formatted_duration}, {velocity}, {position}, {torque} \n")
@@ -625,12 +625,13 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
     def StartTrainingButton_clicked(self):
         self.StartTrainingFlag = True
         self.training_start_time = time.time()
+        # print(f"Start time:{self.training_start_time}")
         start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.start_training_flag.emit(self.StartTrainingFlag)
         log_dir = "log"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
-        self.filename = f"log/joint_data_{start_time}.txt"
+        self.filename = f"log/ZhouHao_joint_data_{start_time}.txt"
         self.filename_changed.emit(self.filename)
         # print(f"filename is: {self.filename}")
 

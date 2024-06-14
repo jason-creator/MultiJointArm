@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="img">
+    <file>img/pause.png</file>
+    <file>img/start.png</file>
+    <file>a13hr-f0y48-001.ico</file>
+  </qresource>
+</RCC>
