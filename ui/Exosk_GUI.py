@@ -631,7 +631,7 @@ class MyMotorWindow(QMainWindow, Ui_MotorWindowWidget):
         log_dir = "log"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
-        self.filename = f"log/ZhouHao_joint_data_{start_time}.txt"
+        self.filename = f"log/KuangQi_joint_data_{start_time}.txt"
         self.filename_changed.emit(self.filename)
         # print(f"filename is: {self.filename}")
 

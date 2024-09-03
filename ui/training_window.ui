@@ -30,7 +30,7 @@
      </font>
     </property>
     <property name="title">
-     <string>峰值力矩/运动总量</string>
+     <string>Peak Torque/Work Done</string>
     </property>
     <widget class="QLCDNumber" name="IRpeaktorque">
      <property name="geometry">
@@ -127,7 +127,7 @@
      </font>
     </property>
     <property name="title">
-     <string>重复次数</string>
+     <string>Repetitions</string>
     </property>
     <widget class="QLCDNumber" name="Repsnow">
      <property name="geometry">
@@ -195,7 +195,7 @@
      </font>
     </property>
     <property name="title">
-     <string>组数</string>
+     <string>Sets</string>
     </property>
     <widget class="QLCDNumber" name="Setnow">
      <property name="geometry">
@@ -264,7 +264,7 @@
      </font>
     </property>
     <property name="text">
-     <string>力矩值：</string>
+     <string>Torque：</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="torque">
@@ -294,7 +294,7 @@
      </font>
     </property>
     <property name="text">
-     <string>角度值：</string>
+     <string>Degree：</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="angle">
@@ -324,7 +324,7 @@
      </font>
     </property>
     <property name="text">
-     <string>速度值：</string>
+     <string>Speed：</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="speed">
@@ -375,7 +375,7 @@
      </font>
     </property>
     <property name="title">
-     <string>训练时间</string>
+     <string>Training Duration</string>
     </property>
     <widget class="QLCDNumber" name="time">
      <property name="geometry">
@@ -404,7 +404,7 @@
      </font>
     </property>
     <property name="title">
-     <string>状态</string>
+     <string>State</string>
     </property>
     <widget class="QLabel" name="label_12">
      <property name="geometry">
@@ -460,7 +460,7 @@
       </font>
      </property>
      <property name="text">
-      <string>模式</string>
+      <string>Mode</string>
      </property>
     </widget>
     <widget class="QTextBrowser" name="Mode">
@@ -517,7 +517,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>运动范围</string>
+     <string>Range</string>
     </property>
     <widget class="QLabel" name="label_13">
      <property name="geometry">
@@ -806,7 +806,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="title">
-     <string>极限速度</string>
+     <string>Max Speed</string>
     </property>
     <widget class="QSpinBox" name="limitiedSpeedValue">
      <property name="geometry">
@@ -837,7 +837,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="text">
-      <string>设置值</string>
+      <string>Value</string>
      </property>
     </widget>
     <widget class="QPushButton" name="limitedSpeedSendButton">
@@ -856,7 +856,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="text">
-      <string>发送</string>
+      <string>Send</string>
      </property>
     </widget>
     <widget class="QLabel" name="sendResult">
@@ -896,7 +896,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>取消</string>
+     <string>Cancel</string>
     </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser_4">
@@ -978,7 +978,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>开始</string>
+     <string>Start</string>
     </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -1008,19 +1008,19 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>310</x>
       <y>140</y>
-      <width>201</width>
+      <width>241</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>16</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string>力矩随时间变化曲线</string>
+     <string>Torque vs. Time Curve</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
@@ -1028,19 +1028,19 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>310</x>
       <y>440</y>
-      <width>201</width>
+      <width>241</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>16</pointsize>
+      <pointsize>14</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
     </property>
     <property name="text">
-     <string>速度随时间变化曲线</string>
+     <string>Speed vs. Time Curve</string>
     </property>
    </widget>
   </widget>
@@ -1055,27 +1055,27 @@ p, li { white-space: pre-wrap; }
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>文件</string>
+     <string>file</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuRun">
     <property name="title">
-     <string>运行</string>
+     <string>run</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuReport">
     <property name="title">
-     <string>报告</string>
+     <string>report</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
-     <string>数据</string>
+     <string>data</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>帮助</string>
+     <string>help</string>
     </property>
    </widget>
    <addaction name="menuFile"/>
@@ -1085,6 +1085,11 @@ p, li { white-space: pre-wrap; }
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionrun">
+   <property name="text">
+    <string>run</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
